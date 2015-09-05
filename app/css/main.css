@@ -93,14 +93,15 @@ textarea {
     width: 100%;
     text-align: center;
     background: #fff;
-    padding: 10px;
     position: fixed;
     z-index: 10;
+    -webkit-box-shadow: 0px 2px 2px 0px rgba(153,153,153,1);
+    -moz-box-shadow: 0px 2px 2px 0px rgba(153,153,153,1);
+    box-shadow: 0px 2px 2px 0px rgba(153,153,153,1);
 }
-h1
+.logo
 {
-    padding: 0;
-    margin: 0;
+    height: 60px;
 }
 
 .container
@@ -118,7 +119,7 @@ h1
 
 .input-message
 {
-    background: #CCC;
+    background: #8a8ada;
 }
 
 .input-message input
@@ -131,7 +132,7 @@ h1
 .message
 {
     width: 90%;
-    background: #fff;
+    background: #EEE;
     border-radius: 10px;
     padding: 10px;
     margin: 5px 0;
@@ -156,18 +157,19 @@ h1
 .message.left:before
 {
     left: -12px;
-    border-right:12px solid white; 
+    border-right:12px solid #EEE; 
 }
 
 .message.right
 {
     float: right;
-    background: #EEE;
+    background: #6464cf;
+    color: #fff;
 }
 .message.right:before
 {
     right: -12px;
-    border-left: 12px solid #EEE; 
+    border-left: 12px solid #6464cf; 
 }
 
 
@@ -343,7 +345,6 @@ h1
 }
 body {
     font-family: 'Helvetica Neue', 'Helvetica', 'Arial';
-    background: #c5e3d8;
 }
 h1.heading {
     font-weight: 100 !important;
