@@ -47,7 +47,7 @@ $(document).ready(function()
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13) {
 	      var text = $('#messageInput').val();
-	      fb.push({text: text, longitude: longitude, latitude: latitiude});
+	      fb.push({text: text, longitude: longitude, latitude: latitude});
 	      $('#messageInput').val('');
 	    }
 	  });
