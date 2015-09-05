@@ -4,8 +4,13 @@ $(document).ready(function() {
 	var fb = new Firebase("https://scorching-heat-529.firebaseio.com");
 	var messages = fb.child("messages");
 
+	var bubbleRadius = 140.0;
+	var geoRadius = (1.0/111000.0) * bubbleRadius;
+
 	var longitude = 0;
 	var latitude = 0;
+
+	var counting = false;
 
 	var uid = fb.getAuth().uid;
 	var color = generateColor(uid);
@@ -21,6 +26,32 @@ $(document).ready(function() {
 		navigator.geolocation.watchPosition(updateLocation);
 	}
 
+	function bubbleCount() {
+
+		var people = fb.child('users');
+		people.once('value', function(snap) {
+			var results = snap.val();
+			total = 0;
+			for (var k in results) {
+				var dist = measure(latitude, longitude, results[k].latitude, results[k].longitude);
+				console.log("dist="+results[k].latitude+" v "+latitude);
+				if(dist <= bubbleRadius) {
+					total = total + 1;
+				}
+			}
+			console.log("TOTAL: "+total);			
+				$("#count").text(total);
+	  		if (total == 0) {
+	  			$("#count").removeClass("on").addClass("off");
+	  		} else {
+	  			$("#count").removeClass("off").addClass("on");
+	  		}
+
+			setTimeout(bubbleCount, 10000);
+		});
+
+	}
+
 	function updateLocation(position) {    
 
 		latitude = position.coords.latitude;
@@ -30,6 +61,11 @@ $(document).ready(function() {
 	    userFB.child('longitude').set(longitude);
 
     	console.log("Location: "+latitude+", "+longitude)
+
+    	if (!counting) {
+    		counting = true;
+    		bubbleCount();
+    	}
 
 	};
 
@@ -85,7 +121,7 @@ $(document).ready(function() {
 	//when a new message is added, show it to the user & add to the users history of received & sent messages
 	messages.limitToLast(1).on('child_added', function(snapshot) {
 		var message = snapshot.val();
-	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 50.0)
+	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= bubbleRadius)
 	  	{
 	  		if(message.uid == uid)
 	  		{

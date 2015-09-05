@@ -91,7 +91,6 @@ textarea {
 .header
 {
     width: 100%;
-    text-align: center;
     background: #fff;
     position: fixed;
     z-index: 10;
@@ -101,7 +100,8 @@ textarea {
 }
 .logo
 {
-    height: 60px;
+    height: 44px;
+    margin: 4px;
 }
 
 .container
@@ -404,3 +404,21 @@ h2.heading {
     max-width: 100%;
     height: auto;
 }
+#count {
+    margin: 8px;
+    padding: 5px 11px;
+    float: right;
+    border-radius:50%;
+    background-color: #888888;
+    color: white;
+    font-weight: bold;
+}
+#count.on {
+    background-color: #aa2222;    
+}
+#count.off {
+    background-color: #888888;    
+}
+
+
+
