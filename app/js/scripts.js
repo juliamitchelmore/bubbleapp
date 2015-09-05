@@ -95,26 +95,37 @@ $(document).ready(function() {
 	}
 
 	function pushMessage(){
-		var text = $('#messageInput').val();
-    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
+		if($('#messageInput').val().length > 0)
+		{
+			var text = $('#messageInput').val();
+	    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 
-    	$('#messageInput').val('');
+	    	$('#messageInput').val('');
+	    }
 	};
 
+	//check for 'send' events: enter, button or done
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13)
 	    {
-	    	if($('#messageInput').val().length > 0) {
-		    	pushMessage();
-		    }
+		    pushMessage();
 
 	    	return false;
 	    }
 	});
 	$('.input-message .btn').click(function (e) {
-		if($('#messageInput').val().length > 0)
-		{
-		    pushMessage();
+		pushMessage();
+	});
+	$('#messageInput').on('blur', function(e) {
+	    pushMessage();
+	    $('.stick-bottom').removeClass('focused');
+	});
+
+	//fix weird focus input issue which pushes fixed footer up on keyboard show
+	$('#messageInput').on('focus', function(e) {
+		if(isTouch)
+	  	{
+		    $('.stick-bottom').addClass('focused');
 		}
 	});
 
@@ -131,7 +142,7 @@ $(document).ready(function() {
 	  		{
 	  			displayChatMessage(message.text, message.color, false);
 	  		}
-
+	  		
 	  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
 	  	}
 	});
@@ -163,13 +174,18 @@ $(document).ready(function() {
   			addMessage="<div class='message left' style='border-right: 10px solid #"+col+"'>" + text + "</div>";
   		}
     	$(addMessage).appendTo($('#messagesDiv'));
-    	$(document).scrollTop($(document).height());
+
+    	if($('.container').height() > $(window).height())
+    	{
+    		$(document).scrollTop($(document).height());	
+    	}
   	};
 
 	getLocation();
 
 	setTimeout(function()
 	{
+		$('.loading').hide();
 		historyFlag = false;
 	}, 2000);
 
