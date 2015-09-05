@@ -90,7 +90,7 @@ textarea {
 
 .container
 {
-    padding-bottom: 120px;
+    padding: 20px 20px 120px 20px;
 }
 
 .stick-bottom
@@ -113,6 +113,47 @@ textarea {
     height: 60px;
 }
 
+.message
+{
+    width: 90%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    position: relative;
+}
+
+.message.left:before, .message.right:before
+{
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    display: block;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.message.left
+{
+    float: left;
+}
+.message.left:before
+{
+    left: -12px;
+    border-right:12px solid white; 
+}
+
+.message.right
+{
+    float: right;
+    background: #EEE;
+}
+.message.right:before
+{
+    right: -12px;
+    border-left: 12px solid #EEE; 
+}
 
 
 /* ==========================================================================
