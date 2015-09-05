@@ -12,8 +12,6 @@ $(document).ready(function() {
 		  }
 		});
 
-	});	
-
 	fb.onAuth(function(authData) {
 
 	  if (authData) {
@@ -47,6 +45,8 @@ $(document).ready(function() {
 		}
 
   });
+
+	});	
 
 	function generateColor(str) { // java String#hashCode
     var hash = 0;
