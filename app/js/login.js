@@ -9,14 +9,12 @@ $(document).ready(function() {
 	 	if($('.item.active').hasClass('slide1'))
 	 	{
 	 		$('.logo').removeClass('large').addClass('small');
-	 		$('.carousel').removeClass('moretop');
 	 	}
 	})
 	$('.carousel').on('slid.bs.carousel', function () {
 	 	if($('.item.active').hasClass('slide1'))
 	 	{
 	 		$('.logo').removeClass('small').addClass('large');
-	 		$('.carousel').addClass('moretop');
 	 	}
 	})
 

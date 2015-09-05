@@ -235,38 +235,6 @@ textarea {
 }
 
 /* ==========================================================================
-   Desktop styles
-   ========================================================================== */
-
-@media (min-width: 600px)
-{
-    .container, .input-message form
-    {
-        width: 600px;
-    }
-
-    .input-message form
-    {
-        margin: 0 auto;
-    }
-    .input-message textarea
-    {
-        width: 480px;
-        display: inline;
-    }
-    .input-message .btn
-    {
-        width: 100px;
-        margin-left: 10px;
-        background: #eee;
-        display: inline-block;
-        line-height: 60px;
-        padding: 0;
-        border: 0;
-    }
-}
-
-/* ==========================================================================
    Login page styles
    ========================================================================== */
 
@@ -298,6 +266,7 @@ body.login
 }
 .login .logo.large
 {
+    max-width: 360px;
     width: 90%;
 }
 .no-touch .login .logo.large
@@ -310,6 +279,7 @@ body.login
 }
 .login .logo.small
 {
+    max-width: 240px;
     width: 60%;
     margin: 40px auto;
 }
@@ -330,12 +300,50 @@ body.login
 }
 .no-touch .carousel-inner
 {
-    min-height: 70vh;
+    min-height: 50vh;
 }
 
 .login h2
 {
     padding: 0 10px;
+}
+
+
+/* ==========================================================================
+   Desktop styles
+   ========================================================================== */
+
+@media (min-width: 600px)
+{
+    .container, .input-message form
+    {
+        width: 600px;
+    }
+
+    .input-message form
+    {
+        margin: 0 auto;
+    }
+    .input-message textarea
+    {
+        width: 480px;
+        display: inline;
+    }
+    .input-message .btn
+    {
+        width: 100px;
+        margin-left: 10px;
+        background: #eee;
+        display: inline-block;
+        line-height: 60px;
+        padding: 0;
+        border: 0;
+    }
+
+    .no-touch .carousel
+    {
+        padding-top: 300px;
+    }
 }
 
 
