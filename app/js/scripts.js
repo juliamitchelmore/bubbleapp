@@ -49,59 +49,78 @@ $(document).ready(function()
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13) {
 	      var text = $('#messageInput').val();
-	      messages.push({text: text, longitude: longitude, latitude: latitude, color: color});
+	      messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: userID});
 	      $('#messageInput').val('');
 	    }
 	  });
 
 	messages.on('child_added', function(snapshot) {
-	var message = snapshot.val();
+		var message = snapshot.val();
 	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 7.0) {
-	        displayChatMessage(message.text, message.color);	  			
+
+	  		if(message.uid == userID)
+	  		{
+	        	displayChatMessage(message.text, message.color, true);	
+	  		}
+	  		else
+	  		{
+	  			displayChatMessage(message.text, message.color, false);
+	  		}
 	  	}
 	});
   
-  	function displayChatMessage(text, col) {
-  		var addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
+  	function displayChatMessage(text, col, currUser) {
+  		var addMessage = '';
+  		if(currUser)
+  		{
+  			addMessage="<div class='message right'>" + text + "</div>";
+  		}
+  		else
+  		{
+  			addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
+  		}
     	$(addMessage).appendTo($('#messagesDiv'));
     	$(document).scrollTop($(document).height());
   	};
 
-		function generateColor(str) { // java String#hashCode
-		    var hash = 0;
-		    for (var i = 0; i < str.length; i++) {
-		       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-		    }
-		    var c = (hash & 0x00FFFFFF)
-		        .toString(16)
-		        .toUpperCase();
+	function generateColor(str) { // java String#hashCode
+	    var hash = 0;
+	    for (var i = 0; i < str.length; i++) {
+	       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+	    }
+	    var c = (hash & 0x00FFFFFF)
+	        .toString(16)
+	        .toUpperCase();
 
-		    return "00000".substring(0, 6 - c.length) + c;
-		} 
+	    return "00000".substring(0, 6 - c.length) + c;
+	} 
 
-		function intToRGB(i){
-		    
-		}
+	function intToRGB(i){
+	    
+	}
 
   	//add a user
   	var isNewUser = true;
   	var userFB = '';
   	var userMessages = '';
   	var color = '';
+  	var userID = '';
 
 	fb.onAuth(function(authData) {
 	  if (authData && isNewUser) {
 	    // save the user's profile into the database so we can list users,
 	    // use them in Security and Firebase Rules, and show profiles
 
-	    userFB = new Firebase("https://scorching-heat-529.firebaseio.com/users/" + authData.uid);
+	    userID = authData.uid;
+
+	    userFB = new Firebase("https://scorching-heat-529.firebaseio.com/users/" + userID);
 			
 			userFB.on("value", function(snapshot) {
 
 				//Already Registered read color into local var
 				if (snapshot.val() == null || snapshot.val().color === null) {
 					//This user isn't assigned a color yet.
-					color = generateColor(authData.uid);
+					color = generateColor(userID);
 					userFB.child("color").set(color);
 				} else {
 					color = snapshot.val().color;
@@ -114,16 +133,16 @@ $(document).ready(function()
 
 			}, function (errorObject) {
 
-				//If not there then add user
-				color = generateColor(authData.uid);
+			//If not there then add user
+			color = generateColor(userID);
 
 	    	userFB.set({
 	    		provider: authData.provider,
-	      	name: authData.facebook.displayName,
-	      	color: color
+		      	name: authData.facebook.displayName,
+		      	color: color
 	    	});
 
-			});
+		});
 
 	  }
 
