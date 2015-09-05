@@ -12,20 +12,17 @@ $(document).ready(function() {
 
 	//Static Functions
 	function getLocation() {
-	    if (navigator.geolocation) {
-	        navigator.geolocation.getCurrentPosition(updateLocation);
-	    }
+		navigator.geolocation.getCurrentPosition(updateLocation);
+		navigator.geolocation.watchPosition(updateLocation);
 	}
 
 	function updateLocation(position) {    
-	    // Update Location in Bubble backend via API
-	    longitude = position.coords.longitude;
-	    latitude = position.coords.latitude;
 
-			console.log("GEO: "+latitude+","+longitude);
+		latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
 
-	    // Get co-ordinates again in 30 sectonds
-	    setTimeout(getLocation, 30000);
+    console.log("Location: "+latitude+", "+longitude)
+
 	}
 
 	function generateColor(str) { // java String#hashCode
@@ -63,7 +60,7 @@ $(document).ready(function() {
 
 	messages.on('child_added', function(snapshot) {
 		var message = snapshot.val();
-	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 7.0) {
+	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 50.0) {
 
 	  		if(message.uid == uid)
 	  		{
@@ -89,5 +86,8 @@ $(document).ready(function() {
     	$(addMessage).appendTo($('#messagesDiv'));
     	$(document).scrollTop($(document).height());
   	};
+
+	getLocation()
+
 
 });
