@@ -27,19 +27,19 @@ $(document).ready(function() {
 	    userFB.child('longitude').set(longitude);
 
     	console.log("Location: "+latitude+", "+longitude)
-    	
+
 	}
 
 	function generateColor(str) { // java String#hashCode
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    var c = (hash & 0x00FFFFFF)
-      .toString(16)
-      .toUpperCase();
+	    var hash = 0;
+	    for (var i = 0; i < str.length; i++) {
+	      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+	    }
+	    var c = (hash & 0x00FFFFFF)
+	      .toString(16)
+	      .toUpperCase();
 
-    return "00000".substring(0, 6 - c.length) + c;
+	    return "00000".substring(0, 6 - c.length) + c;
 	} 
 
 	function measure(lat1, lon1, lat2, lon2){ 
@@ -56,16 +56,19 @@ $(document).ready(function() {
 	}
 
 	$('#messageInput').keypress(function (e) {
-	    if (e.keyCode == 13) {
+	    if (e.keyCode == 13 && $('#messageInput').val().length > 0) {
 	    	var text = $('#messageInput').val();
 	    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 	    	$('#messageInput').val('');
 	    }
 	});
 	$('.input-message .btn').click(function (e) {
-	    var text = $('#messageInput').val();
-	    messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
-	    $('#messageInput').val('');
+		if($('#messageInput').val().length > 0)
+		{
+		    var text = $('#messageInput').val();
+		    messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
+		    $('#messageInput').val('');
+		}
 	});
 
 	messages.on('child_added', function(snapshot) {

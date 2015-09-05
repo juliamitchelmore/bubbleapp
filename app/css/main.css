@@ -122,11 +122,13 @@ textarea {
     background: #8a8ada;
 }
 
-.input-message input
+.input-message textarea
 {
+    resize: none;
     display: block;
     width: 100%;
     height: 60px;
+    padding: 10px;
 }
 
 .message
@@ -172,6 +174,43 @@ textarea {
 {
     right: -12px;
     border-left: 12px solid #6464cf; 
+}
+
+.visible-desktop
+{
+    display: none;
+}
+
+/* ==========================================================================
+   Desktop styles
+   ========================================================================== */
+
+@media (min-width: 600px)
+{
+    .container, .input-message form
+    {
+        width: 600px;
+    }
+
+    .input-message form
+    {
+        margin: 0 auto;
+    }
+    .input-message textarea
+    {
+        width: 480px;
+        display: inline;
+    }
+    .input-message .btn
+    {
+        width: 100px;
+        margin-left: 10px;
+        background: #eee;
+        display: inline-block;
+        line-height: 60px;
+        padding: 0;
+        border: 0;
+    }
 }
 
 
