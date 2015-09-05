@@ -16,9 +16,9 @@ $(document).ready(function()
       });
   
   	function displayChatMessage(text) {
-    	$('<div/>').text(text).appendTo($('#messagesDiv'));
+  		var addMessage="<div class='message left'>" + text + "</div>";
+    	$(addMessage).appendTo($('#messagesDiv'));
     	$(document).scrollTop($('#messagesDiv')[0].scrollHeight);
-
   	};
 
 });
