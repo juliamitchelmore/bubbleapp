@@ -76,15 +76,18 @@ $(document).ready(function() {
 	  	}
 	});
   
-	function displayChatMessage(text, col, currUser) {
-		var addMessage = '';
-		if(currUser) {
-			addMessage="<div class='message right'>" + text + "</div>";
-		} else {
-			addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
-		}
-  	$(addMessage).appendTo($('#messagesDiv'));
-  	$(document).scrollTop($(document).height());
-	};
+  	function displayChatMessage(text, col, currUser) {
+  		var addMessage = '';
+  		if(currUser)
+  		{
+  			addMessage="<div class='message right'>" + text + "</div>";
+  		}
+  		else
+  		{
+  			addMessage="<div class='message left' style='border-right: 10px solid #"+col+"'>" + text + "</div>";
+  		}
+    	$(addMessage).appendTo($('#messagesDiv'));
+    	$(document).scrollTop($(document).height());
+  	};
 
 });

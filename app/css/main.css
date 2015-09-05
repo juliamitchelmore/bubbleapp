@@ -153,6 +153,8 @@ textarea {
 .message.left
 {
     float: left;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 .message.left:before
 {
