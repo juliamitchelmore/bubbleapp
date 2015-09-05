@@ -1,16 +1,36 @@
 $(document).ready(function() {
-	
+
+	//init carousel
+  	$('.carousel').carousel({
+  		wrap: false
+  	});
+
+  	$('.carousel').on('slide.bs.carousel', function () {
+	 	if($('.item.active').hasClass('slide1'))
+	 	{
+	 		$('.logo').removeClass('large').addClass('small');
+	 		$('.carousel').removeClass('moretop');
+	 	}
+	})
+	$('.carousel').on('slid.bs.carousel', function () {
+	 	if($('.item.active').hasClass('slide1'))
+	 	{
+	 		$('.logo').removeClass('small').addClass('large');
+	 		$('.carousel').addClass('moretop');
+	 	}
+	})
+
 	var fb = new Firebase("https://scorching-heat-529.firebaseio.com/");
 		
-	$("#facebook").click(function() {
+	$(".facebook").click(function() {
 
 		fb.authWithOAuthRedirect("facebook", function(error, authData) {
-		  if (error) {
+		if (error) {
 		    console.log("Login Failed!", error);
-		  } else {
+		} else {
 		    console.log("Authenticated successfully with payload:", authData);
-		  }
-		});
+		}
+	});
 
 	fb.onAuth(function(authData) {
 
@@ -44,11 +64,10 @@ $(document).ready(function() {
 
 		}
 
-  });
+  	});
+});	
 
-	});	
-
-	function generateColor(str) { // java String#hashCode
+function generateColor(str) { // java String#hashCode
     var hash = 0;
     for (var i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
