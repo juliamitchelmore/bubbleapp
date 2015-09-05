@@ -10,7 +10,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>bubbleapp</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
@@ -31,11 +31,13 @@
 
     <section class="container" id="top">
 
-    <div id="messagesDiv"></div>
+        <div id="messagesDiv"></div>
 
-    <label>Enter your message</label>
-    <input id="messageInput" type="text" name="message"/>
+        
     
+    </section>
+    <section class="input-message stick-bottom">
+        <input id="messageInput" type="text" name="message" placeholder="Send a compliment!"/>
     </section>
 
     <script src="components/jquery/dist/jquery.min.js"></script>
