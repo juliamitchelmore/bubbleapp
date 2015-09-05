@@ -56,7 +56,7 @@ $(document).ready(function() {
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13) {
 	      var text = $('#messageInput').val();
-	      messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: userID});
+	      messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 	      $('#messageInput').val('');
 	    }
 	  });
@@ -65,7 +65,7 @@ $(document).ready(function() {
 		var message = snapshot.val();
 	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 7.0) {
 
-	  		if(message.uid == userID)
+	  		if(message.uid == uid)
 	  		{
 	        	displayChatMessage(message.text, message.color, true);	
 	  		}
@@ -76,18 +76,15 @@ $(document).ready(function() {
 	  	}
 	});
   
-  	function displayChatMessage(text, col, currUser) {
-  		var addMessage = '';
-  		if(currUser)
-  		{
-  			addMessage="<div class='message right'>" + text + "</div>";
-  		}
-  		else
-  		{
-  			addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
-  		}
-    	$(addMessage).appendTo($('#messagesDiv'));
-    	$(document).scrollTop($(document).height());
-  	};
+	function displayChatMessage(text, col, currUser) {
+		var addMessage = '';
+		if(currUser) {
+			addMessage="<div class='message right'>" + text + "</div>";
+		} else {
+			addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
+		}
+  	$(addMessage).appendTo($('#messagesDiv'));
+  	$(document).scrollTop($(document).height());
+	};
 
 });
