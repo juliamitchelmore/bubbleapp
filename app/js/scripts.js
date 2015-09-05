@@ -11,6 +11,9 @@ $(document).ready(function() {
 	var color = generateColor(uid);
 
 	var userFB = fb.child('users').child(uid);
+	var userHistory = fb.child('users').child(uid).child('messages');
+
+	var historyFlag = true;
 
 	//Static Functions
 	function getLocation() {
@@ -28,7 +31,7 @@ $(document).ready(function() {
 
     	console.log("Location: "+latitude+", "+longitude)
 
-	}
+	};
 
 	function generateColor(str) { // java String#hashCode
 	    var hash = 0;
@@ -40,7 +43,7 @@ $(document).ready(function() {
 	      .toUpperCase();
 
 	    return "00000".substring(0, 6 - c.length) + c;
-	} 
+	};
 
 	function measure(lat1, lon1, lat2, lon2){ 
 	    var R = 6378.137; // Radius of earth in KM
@@ -55,26 +58,35 @@ $(document).ready(function() {
 	    return d * 1000; // meters
 	}
 
+	function pushMessage(){
+		var text = $('#messageInput').val();
+    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
+
+    	$('#messageInput').val('');
+	};
+
 	$('#messageInput').keypress(function (e) {
-	    if (e.keyCode == 13 && $('#messageInput').val().length > 0) {
-	    	var text = $('#messageInput').val();
-	    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
-	    	$('#messageInput').val('');
+	    if (e.keyCode == 13)
+	    {
+	    	if($('#messageInput').val().length > 0) {
+		    	pushMessage();
+		    }
+
+	    	return false;
 	    }
 	});
 	$('.input-message .btn').click(function (e) {
 		if($('#messageInput').val().length > 0)
 		{
-		    var text = $('#messageInput').val();
-		    messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
-		    $('#messageInput').val('');
+		    pushMessage();
 		}
 	});
 
-	messages.on('child_added', function(snapshot) {
+	//when a new message is added, show it to the user & add to the users history of received & sent messages
+	messages.limitToLast(1).on('child_added', function(snapshot) {
 		var message = snapshot.val();
-	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 50.0) {
-
+	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 50.0)
+	  	{
 	  		if(message.uid == uid)
 	  		{
 	        	displayChatMessage(message.text, message.color, true);	
@@ -83,7 +95,25 @@ $(document).ready(function() {
 	  		{
 	  			displayChatMessage(message.text, message.color, false);
 	  		}
+
+	  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
 	  	}
+	});
+
+	//on load, show the history of messages (but not on future additions)
+	userHistory.on('child_added', function(snapshot) {
+		var message = snapshot.val();
+		if(historyFlag)
+		{
+			if(message.uid == uid)
+	  		{
+	        	displayChatMessage(message.text, message.color, true);	
+	  		}
+	  		else
+	  		{
+	  			displayChatMessage(message.text, message.color, false);
+	  		}
+		}
 	});
   
   	function displayChatMessage(text, col, currUser) {
@@ -100,7 +130,11 @@ $(document).ready(function() {
     	$(document).scrollTop($(document).height());
   	};
 
-	getLocation()
+	getLocation();
 
+	setTimeout(function()
+	{
+		historyFlag = false;
+	}, 2000);
 
 });
