@@ -10,6 +10,8 @@ $(document).ready(function() {
 	var uid = fb.getAuth().uid;
 	var color = generateColor(uid);
 
+	var userFB = fb.child('users').child(uid);
+
 	//Static Functions
 	function getLocation() {
 	    if (navigator.geolocation) {
@@ -21,6 +23,9 @@ $(document).ready(function() {
 	    // Update Location in Bubble backend via API
 	    longitude = position.coords.longitude;
 	    latitude = position.coords.latitude;
+
+	    userFB.child('latitude').set(latitude);
+	    userFB.child('longitude').set(longitude);
 
 			console.log("GEO: "+latitude+","+longitude);
 
@@ -55,11 +60,16 @@ $(document).ready(function() {
 
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13) {
-	      var text = $('#messageInput').val();
-	      messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
-	      $('#messageInput').val('');
+	    	var text = $('#messageInput').val();
+	    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
+	    	$('#messageInput').val('');
 	    }
-	  });
+	});
+	$('.input-message .btn').click(function (e) {
+	    var text = $('#messageInput').val();
+	    messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
+	    $('#messageInput').val('');
+	});
 
 	messages.on('child_added', function(snapshot) {
 		var message = snapshot.val();
