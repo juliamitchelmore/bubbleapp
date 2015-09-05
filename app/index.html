@@ -11,15 +11,24 @@
         <script src="js/login.js"></script>
     </head>
     <body>
+    
     <div id="slider" class="nivoSlider">
         <img src="resources/1.jpg" />
         <img src="resources/2.jpg" /></a>
         <img src="resources/3.jpg" />
-        <img src="images/slide4.jpg" />
     </div>
-
-      <img id="facebook" src="resources/facebook.png" height="54" />
-        
+      <img id="facebook" src="resources/facebook.png" height="54" />        
     </body>
-
+    <script type="text/javascript">
+    $(window).load(function() {
+                    $('#slider').nivoSlider({
+                        effect: 'random',
+                        animSpeed: 500,
+                        pauseTime: 7000,
+                        directionNav: false,
+                        controlNav: true,
+                        pauseOnHover: false,
+                        randomStart: false,
+                    });
+    </script>
 </html>
