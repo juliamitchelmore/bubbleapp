@@ -1,7 +1,9 @@
 
+
 $(document).ready(function()
 {
-	var fb = new Firebase("https://scorching-heat-529.firebaseio.com/");
+	var fb = new Firebase("https://scorching-heat-529.firebaseio.com");
+	var messages = fb.child("messages");
 	var longitude = 0;
 	var latitude = 0;
 
@@ -14,8 +16,11 @@ $(document).ready(function()
 
 	function updateLocation(position) {    
 	    // Update Location in Bubble backend via API
-			fb.set({longitude: position.coords.longitude});
-			fb.set({latitude: position.coords.latitude});
+	    longitude = position.coords.longitude;
+	    latitude = position.coords.latitude;
+
+			console.log("GEO: "+latitude+","+longitude);
+
 	    // Get co-ordinates again in 30 sectonds
 	    setTimeout(getLocation, 30000);
 	}
@@ -29,11 +34,9 @@ $(document).ready(function()
 	    Math.sin(dLon/2) * Math.sin(dLon/2);
 	    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 	    var d = R * c;
+	    console.log("Distance is " + (d * 1000));
 	    return d * 1000; // meters
 	}
-
-	//Init the loop to track location
-	getLocation();
 		
 	fb.authWithOAuthPopup("facebook", function(error, authData) {
 	  if (error) {
@@ -46,42 +49,84 @@ $(document).ready(function()
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13) {
 	      var text = $('#messageInput').val();
-	      fb.push({text: text, longitude: longitude, latitude: latitude});
+	      messages.push({text: text, longitude: longitude, latitude: latitude, color: color});
 	      $('#messageInput').val('');
 	    }
 	  });
 
-	fb.on('child_added', function(snapshot) {
+	messages.on('child_added', function(snapshot) {
 	var message = snapshot.val();
 	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 7.0) {
-	        displayChatMessage(message.text);	  			
+	        displayChatMessage(message.text, message.color);	  			
 	  	}
 	});
   
-  	function displayChatMessage(text) {
-  		var addMessage="<div class='message left'>" + text + "</div>";
+  	function displayChatMessage(text, col) {
+  		var addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
     	$(addMessage).appendTo($('#messagesDiv'));
     	$(document).scrollTop($(document).height());
   	};
 
+		function generateColor(str) { // java String#hashCode
+		    var hash = 0;
+		    for (var i = 0; i < str.length; i++) {
+		       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+		    }
+		    var c = (hash & 0x00FFFFFF)
+		        .toString(16)
+		        .toUpperCase();
 
+		    return "00000".substring(0, 6 - c.length) + c;
+		} 
+
+		function intToRGB(i){
+		    
+		}
 
   	//add a user
   	var isNewUser = true;
   	var userFB = '';
-  	var color = randomColor();
+  	var userMessages = '';
+  	var color = '';
+
 	fb.onAuth(function(authData) {
 	  if (authData && isNewUser) {
 	    // save the user's profile into the database so we can list users,
 	    // use them in Security and Firebase Rules, and show profiles
-	    fb.child(authData.uid).set({
-	      provider: authData.provider,
-	      name: authData.facebook.displayName,
-	      color: color
-	    });
 
-	    userFB = new Firebase("https://scorching-heat-529.firebaseio.com/" + authData.uid);
+	    userFB = new Firebase("https://scorching-heat-529.firebaseio.com/users/" + authData.uid);
+			
+			userFB.on("value", function(snapshot) {
+
+				//Already Registered read color into local var
+				if (snapshot.val() == null || snapshot.val().color === null) {
+					//This user isn't assigned a color yet.
+					color = generateColor(authData.uid);
+					userFB.child("color").set(color);
+				} else {
+					color = snapshot.val().color;
+				}
+
+				//Init the loop to track location
+				getLocation();
+
+			  console.log("Color: " + color);
+
+			}, function (errorObject) {
+
+				//If not there then add user
+				color = generateColor(authData.uid);
+
+	    	userFB.set({
+	    		provider: authData.provider,
+	      	name: authData.facebook.displayName,
+	      	color: color
+	    	});
+
+			});
+
 	  }
+
 	});
 
 });
