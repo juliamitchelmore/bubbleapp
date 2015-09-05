@@ -1,11 +1,14 @@
 
+$(document).ready(function() {
 
-$(document).ready(function()
-{
 	var fb = new Firebase("https://scorching-heat-529.firebaseio.com");
 	var messages = fb.child("messages");
+
 	var longitude = 0;
 	var latitude = 0;
+
+	var uid = fb.getAuth().uid;
+	var color = generateColor(uid);
 
 	//Static Functions
 	function getLocation() {
@@ -25,6 +28,18 @@ $(document).ready(function()
 	    setTimeout(getLocation, 30000);
 	}
 
+	function generateColor(str) { // java String#hashCode
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var c = (hash & 0x00FFFFFF)
+      .toString(16)
+      .toUpperCase();
+
+    return "00000".substring(0, 6 - c.length) + c;
+	} 
+
 	function measure(lat1, lon1, lat2, lon2){ 
 	    var R = 6378.137; // Radius of earth in KM
 	    var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -37,14 +52,6 @@ $(document).ready(function()
 	    console.log("Distance is " + (d * 1000));
 	    return d * 1000; // meters
 	}
-		
-	fb.authWithOAuthPopup("facebook", function(error, authData) {
-	  if (error) {
-	    console.log("Login Failed!", error);
-	  } else {
-	    console.log("Authenticated successfully with payload:", authData);
-	  }
-	});
 
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13) {
@@ -61,72 +68,10 @@ $(document).ready(function()
 	  	}
 	});
   
-  	function displayChatMessage(text, col) {
-  		var addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
-    	$(addMessage).appendTo($('#messagesDiv'));
-    	$(document).scrollTop($(document).height());
-  	};
-
-		function generateColor(str) { // java String#hashCode
-		    var hash = 0;
-		    for (var i = 0; i < str.length; i++) {
-		       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-		    }
-		    var c = (hash & 0x00FFFFFF)
-		        .toString(16)
-		        .toUpperCase();
-
-		    return "00000".substring(0, 6 - c.length) + c;
-		} 
-
-		function intToRGB(i){
-		    
-		}
-
-  	//add a user
-  	var isNewUser = true;
-  	var userFB = '';
-  	var userMessages = '';
-  	var color = '';
-
-	fb.onAuth(function(authData) {
-	  if (authData && isNewUser) {
-	    // save the user's profile into the database so we can list users,
-	    // use them in Security and Firebase Rules, and show profiles
-
-	    userFB = new Firebase("https://scorching-heat-529.firebaseio.com/users/" + authData.uid);
-			
-			userFB.on("value", function(snapshot) {
-
-				//Already Registered read color into local var
-				if (snapshot.val() == null || snapshot.val().color === null) {
-					//This user isn't assigned a color yet.
-					color = generateColor(authData.uid);
-					userFB.child("color").set(color);
-				} else {
-					color = snapshot.val().color;
-				}
-
-				//Init the loop to track location
-				getLocation();
-
-			  console.log("Color: " + color);
-
-			}, function (errorObject) {
-
-				//If not there then add user
-				color = generateColor(authData.uid);
-
-	    	userFB.set({
-	    		provider: authData.provider,
-	      	name: authData.facebook.displayName,
-	      	color: color
-	    	});
-
-			});
-
-	  }
-
-	});
+	function displayChatMessage(text, col) {
+		var addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
+  	$(addMessage).appendTo($('#messagesDiv'));
+  	$(document).scrollTop($(document).height());
+	};
 
 });
