@@ -101,6 +101,13 @@ $(document).ready(function() {
 	    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 
 	    	$('#messageInput').val('');
+
+				mobileAnalyticsClient.recordEvent('SendMessage', {
+        }, {
+            'CharacterCount': text.length
+        });
+        mobileAnalyticsClient.submitEvents();
+
 	    }
 	};
 
@@ -144,6 +151,12 @@ $(document).ready(function() {
 	  		}
 	  		
 	  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
+
+				mobileAnalyticsClient.recordEvent('ReceiveMessage', {
+        }, {
+        });
+        mobileAnalyticsClient.submitEvents();
+
 	  	}
 	});
 
@@ -188,5 +201,18 @@ $(document).ready(function() {
 		$('.loading').hide();
 		historyFlag = false;
 	}, 2000);
+
+
+    //Make sure region is 'us-east-1'
+  AWS.config.region = 'us-east-1';
+  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'us-east-1:d75bea86-e3ee-413b-91f7-2c3440fa1c8a' //Amazon Cognito Identity Pool ID
+  });
+
+  var options = {
+      appId : '24f707dde5a74fbfa4bc0148c0afbdff', //Amazon Mobile Analytics App ID
+      appTitle : "Bubble7"};
+
+  var mobileAnalyticsClient = new AMA.Manager(options);
 
 });
