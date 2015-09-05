@@ -235,6 +235,81 @@ textarea {
 }
 
 /* ==========================================================================
+   Login page styles
+   ========================================================================== */
+
+body.login
+{
+    background: #6464cf;
+    color: #fff;
+    text-align: center;
+}
+
+.facebook
+{
+    cursor: pointer;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.login .logo
+{
+    width: auto;
+    display: block;
+    margin: 0px auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height:auto;
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+.login .logo.large
+{
+    max-width: 360px;
+    width: 90%;
+}
+.no-touch .login .logo.large
+{
+    margin: 100px auto 20px auto;
+}
+.touch .login .logo.large
+{
+    margin: 60px auto 20px auto;
+}
+.login .logo.small
+{
+    max-width: 240px;
+    width: 60%;
+    margin: 40px auto;
+}
+
+.carousel-indicators
+{
+    position: fixed;
+}
+
+.no-touch .carousel
+{
+    padding-top: 200px;
+}
+.touch .carousel
+{
+    padding-top: 150px;
+    height: 90vh;
+}
+.no-touch .carousel-inner
+{
+    min-height: 50vh;
+}
+
+.login h2
+{
+    padding: 0 10px;
+}
+
+
+/* ==========================================================================
    Desktop styles
    ========================================================================== */
 
@@ -263,6 +338,11 @@ textarea {
         line-height: 60px;
         padding: 0;
         border: 0;
+    }
+
+    .no-touch .carousel
+    {
+        padding-top: 300px;
     }
 }
 
