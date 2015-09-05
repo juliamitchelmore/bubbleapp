@@ -1,40 +1,39 @@
-var longitude = 0
-var latitude = 0
-
-//Static Functions
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(updateLocation);
-    }
-}
-
-function updateLocation(position) {    
-    // Update Location in Bubble backend via API
-		fb.set({longitude: position.coords.longitude});
-		fb.set({latitude: position.coords.latitude});
-    // Get co-ordinates again in 30 sectonds
-    setTimeout(getLocation, 30000);
-}
-
-function measure(lat1, lon1, lat2, lon2){ 
-    var R = 6378.137; // Radius of earth in KM
-    var dLat = (lat2 - lat1) * Math.PI / 180;
-    var dLon = (lon2 - lon1) * Math.PI / 180;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c;
-    return d * 1000; // meters
-}
 
 $(document).ready(function()
 {
+	var fb = new Firebase("https://scorching-heat-529.firebaseio.com/");
+	var longitude = 0;
+	var latitude = 0;
+
+	//Static Functions
+	function getLocation() {
+	    if (navigator.geolocation) {
+	        navigator.geolocation.getCurrentPosition(updateLocation);
+	    }
+	}
+
+	function updateLocation(position) {    
+	    // Update Location in Bubble backend via API
+			fb.set({longitude: position.coords.longitude});
+			fb.set({latitude: position.coords.latitude});
+	    // Get co-ordinates again in 30 sectonds
+	    setTimeout(getLocation, 30000);
+	}
+
+	function measure(lat1, lon1, lat2, lon2){ 
+	    var R = 6378.137; // Radius of earth in KM
+	    var dLat = (lat2 - lat1) * Math.PI / 180;
+	    var dLon = (lon2 - lon1) * Math.PI / 180;
+	    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+	    Math.sin(dLon/2) * Math.sin(dLon/2);
+	    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	    var d = R * c;
+	    return d * 1000; // meters
+	}
 
 	//Init the loop to track location
 	getLocation();
-
-	var fb = new Firebase("https://scorching-heat-529.firebaseio.com/");
 		
 	fb.authWithOAuthPopup("facebook", function(error, authData) {
 	  if (error) {
@@ -71,14 +70,13 @@ $(document).ready(function()
   	var isNewUser = true;
   	var userFB = '';
   	var color = randomColor();
-  	console.log(color);
 	fb.onAuth(function(authData) {
 	  if (authData && isNewUser) {
 	    // save the user's profile into the database so we can list users,
 	    // use them in Security and Firebase Rules, and show profiles
 	    fb.child(authData.uid).set({
 	      provider: authData.provider,
-	      name: getName(authData),
+	      name: authData.facebook.displayName,
 	      color: color
 	    });
 
