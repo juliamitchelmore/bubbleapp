@@ -34,14 +34,6 @@ $(document).ready(function()
 
 	//Init the loop to track location
 	getLocation();
-		
-	fb.authWithOAuthPopup("facebook", function(error, authData) {
-	  if (error) {
-	    console.log("Login Failed!", error);
-	  } else {
-	    console.log("Authenticated successfully with payload:", authData);
-	  }
-	});
 
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13) {
