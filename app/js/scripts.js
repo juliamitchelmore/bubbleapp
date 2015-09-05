@@ -77,7 +77,7 @@ $(document).ready(function()
   		}
   		else
   		{
-  			addMessage="<div class='message left' style='background-color: #"+col+"'>" + text + "</div>";
+  			addMessage="<div class='message left' style='border-right: 10px solid #"+col+"'>" + text + "</div>";
   		}
     	$(addMessage).appendTo($('#messagesDiv'));
     	$(document).scrollTop($(document).height());
