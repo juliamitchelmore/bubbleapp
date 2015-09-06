@@ -91,7 +91,6 @@ textarea {
 .header
 {
     width: 100%;
-    text-align: center;
     background: #fff;
     position: fixed;
     z-index: 10;
@@ -101,7 +100,8 @@ textarea {
 }
 .logo
 {
-    height: 60px;
+    height: 44px;
+    margin: 4px;
 }
 
 .container
@@ -116,10 +116,15 @@ textarea {
     width: 100%;
     padding: 20px;
 }
+.stick-bottom.focused
+{
+    position: absolute;
+    bottom: -10px;
+}
 
 .input-message
 {
-    background: #8a8ada;
+    background: #ddd;
 }
 
 .input-message textarea
@@ -181,6 +186,161 @@ textarea {
     display: none;
 }
 
+/* loading */
+.loading
+{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: block;
+    background: #fff;
+}
+.spinner
+{
+    width: auto;
+    margin: 50px auto;
+    text-align: center;
+    display: block;
+    -webkit-animation: rotation 3s infinite linear;
+    animation: rotation 3s infinite linear;
+}
+.loading h2
+{
+    color: #6464cf;
+    text-align: center;
+    width: 200px;
+    font-size: 2em;
+    position: absolute;
+    left: 50%;
+    top: 160px;
+    margin-left: -100px;
+}
+
+@-webkit-keyframes rotation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+/* count badge */
+.count-users
+{
+    float: right;
+    position: relative;
+    margin: 8px 12px;
+}
+.user-img
+{
+    width: 30px;
+    height: auto;
+}
+#count {
+    padding: 1px 6px;
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    font-size: 12px;
+    border-radius:50%;
+    background-color: #888888;
+    color: white;
+    font-weight: bold;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+#count.on {
+    background-color: #8a8ada;    
+}
+#count.off {
+    background-color: #888888;    
+}
+
+/* ==========================================================================
+   Login page styles
+   ========================================================================== */
+
+body.login
+{
+    background: #6464cf;
+    color: #fff;
+    text-align: center;
+}
+
+.facebook
+{
+    cursor: pointer;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.login .logo
+{
+    width: auto;
+    display: block;
+    margin: 0px auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height:auto;
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+.login .logo.large
+{
+    max-width: 360px;
+    width: 90%;
+}
+.no-touch .login .logo.large
+{
+    margin: 100px auto 20px auto;
+}
+.touch .login .logo.large
+{
+    margin: 60px auto 20px auto;
+}
+.login .logo.small
+{
+    max-width: 240px;
+    width: 60%;
+    margin: 40px auto;
+}
+
+.carousel-indicators
+{
+    position: fixed;
+}
+
+.no-touch .carousel
+{
+    padding-top: 200px;
+}
+.touch .carousel
+{
+    padding-top: 150px;
+    height: 90vh;
+}
+.no-touch .carousel-inner
+{
+    min-height: 50vh;
+}
+
+.login h2
+{
+    padding: 0 10px;
+}
+
+
 /* ==========================================================================
    Desktop styles
    ========================================================================== */
@@ -205,11 +365,17 @@ textarea {
     {
         width: 100px;
         margin-left: 10px;
-        background: #eee;
+        background: #8a8ada;
+        color: #fff;
         display: inline-block;
         line-height: 60px;
         padding: 0;
         border: 0;
+    }
+
+    .no-touch .carousel
+    {
+        padding-top: 300px;
     }
 }
 
@@ -404,3 +570,6 @@ h2.heading {
     max-width: 100%;
     height: auto;
 }
+
+
+

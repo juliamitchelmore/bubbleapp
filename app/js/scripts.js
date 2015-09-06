@@ -4,8 +4,13 @@ $(document).ready(function() {
 	var fb = new Firebase("https://scorching-heat-529.firebaseio.com");
 	var messages = fb.child("messages");
 
+	var bubbleRadius = 140.0;
+	var geoRadius = (1.0/111000.0) * bubbleRadius;
+
 	var longitude = 0;
 	var latitude = 0;
+
+	var counting = false;
 
 	var uid = fb.getAuth().uid;
 	var color = generateColor(uid);
@@ -15,10 +20,38 @@ $(document).ready(function() {
 
 	var historyFlag = true;
 
+	var isTouch = $('html').hasClass('touch');
+
 	//Static Functions
 	function getLocation() {
 		navigator.geolocation.getCurrentPosition(updateLocation);
 		navigator.geolocation.watchPosition(updateLocation);
+	}
+
+	function bubbleCount() {
+
+		var people = fb.child('users');
+		people.once('value', function(snap) {
+			var results = snap.val();
+			total = 0;
+			for (var k in results) {
+				var dist = measure(latitude, longitude, results[k].latitude, results[k].longitude);
+				console.log("dist="+results[k].latitude+" v "+latitude);
+				if(dist <= bubbleRadius) {
+					total = total + 1;
+				}
+			}
+			console.log("TOTAL: "+total);			
+				$("#count").text(total);
+	  		if (total == 0) {
+	  			$("#count").removeClass("on").addClass("off");
+	  		} else {
+	  			$("#count").removeClass("off").addClass("on");
+	  		}
+
+			setTimeout(bubbleCount, 10000);
+		});
+
 	}
 
 	function updateLocation(position) {    
@@ -30,6 +63,11 @@ $(document).ready(function() {
 	    userFB.child('longitude').set(longitude);
 
     	console.log("Location: "+latitude+", "+longitude)
+
+    	if (!counting) {
+    		counting = true;
+    		bubbleCount();
+    	}
 
 	};
 
@@ -59,33 +97,51 @@ $(document).ready(function() {
 	}
 
 	function pushMessage(){
-		var text = $('#messageInput').val();
-    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
+		if($('#messageInput').val().length > 0)
+		{
+			var text = $('#messageInput').val();
+	    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 
-    	$('#messageInput').val('');
+	    	$('#messageInput').val('');
+
+				mobileAnalyticsClient.recordEvent('SendMessage', {
+        }, {
+            'CharacterCount': text.length
+        });
+        mobileAnalyticsClient.submitEvents();
+
+	    }
 	};
 
+	//check for 'send' events: enter, button or done
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13)
 	    {
-	    	if($('#messageInput').val().length > 0) {
-		    	pushMessage();
-		    }
+		    pushMessage();
 
 	    	return false;
 	    }
 	});
 	$('.input-message .btn').click(function (e) {
-		if($('#messageInput').val().length > 0)
-		{
-		    pushMessage();
+		pushMessage();
+	});
+	$('#messageInput').on('blur', function(e) {
+	    pushMessage();
+	    $('.stick-bottom').removeClass('focused');
+	});
+
+	//fix weird focus input issue which pushes fixed footer up on keyboard show
+	$('#messageInput').on('focus', function(e) {
+		if(isTouch)
+	  	{
+		    $('.stick-bottom').addClass('focused');
 		}
 	});
 
 	//when a new message is added, show it to the user & add to the users history of received & sent messages
 	messages.limitToLast(1).on('child_added', function(snapshot) {
 		var message = snapshot.val();
-	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= 50.0)
+	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= bubbleRadius)
 	  	{
 	  		if(message.uid == uid)
 	  		{
@@ -95,8 +151,14 @@ $(document).ready(function() {
 	  		{
 	  			displayChatMessage(message.text, message.color, false);
 	  		}
-
+	  		
 	  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
+
+				mobileAnalyticsClient.recordEvent('ReceiveMessage', {
+        }, {
+        });
+        mobileAnalyticsClient.submitEvents();
+
 	  	}
 	});
 
@@ -126,15 +188,34 @@ $(document).ready(function() {
   		{
   			addMessage="<div class='message left' style='border-right: 10px solid #"+col+"'>" + text + "</div>";
   		}
-    	$(addMessage).appendTo($('#messagesDiv'));
-    	$(document).scrollTop($(document).height());
+
+    	$(addMessage).hide().appendTo($('#messagesDiv')).fadeIn(400);
+
+    	if($('.container').height() > $(window).height())
+    	{
+    		$(document).scrollTop($(document).height());	
+    	}
   	};
 
 	getLocation();
 
 	setTimeout(function()
 	{
+		$('.loading').fadeOut();
 		historyFlag = false;
 	}, 2000);
+
+
+    //Make sure region is 'us-east-1'
+  AWS.config.region = 'us-east-1';
+  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'us-east-1:d75bea86-e3ee-413b-91f7-2c3440fa1c8a' //Amazon Cognito Identity Pool ID
+  });
+
+  var options = {
+      appId : '24f707dde5a74fbfa4bc0148c0afbdff', //Amazon Mobile Analytics App ID
+      appTitle : "Bubble7"};
+
+  var mobileAnalyticsClient = new AMA.Manager(options);
 
 });

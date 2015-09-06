@@ -21,6 +21,9 @@
     <script src="js/modernizr-2.6.2.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.2.9/firebase.js"></script>
 
+    <script src="js/aws-sdk.min.js"></script>
+    <script src="js/aws-sdk-mobile-analytics.min.js"></script>
+
 </head>
 
 <body>
@@ -28,7 +31,17 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
+    <section class="loading">
+        <img class="spinner" src="img/spinner.png">
+        <h2>entering 7m bubble</h2>
+    </section>
+
     <section class="header">
+        <div class="count-users">
+            <div id="count">0</div>
+            <img class="user-img" src="img/user.png"/>
+        </div>
+
         <img class="logo" src="img/b7.png"/>
     </section>
     <section class="container" id="top">
