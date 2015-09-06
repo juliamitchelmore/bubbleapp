@@ -22,6 +22,8 @@ $(document).ready(function() {
 
 	var isTouch = $('html').hasClass('touch');
 
+	var currBubble = '';
+
 	//Static Functions
 	function getLocation() {
 		navigator.geolocation.getCurrentPosition(updateLocation);
@@ -54,6 +56,93 @@ $(document).ready(function() {
 
 	}
 
+	//find if there are any bubbles at the current location
+	function findBubbles()
+	{
+		var bubbles = fb.child("bubbles");
+
+		bubbles.once('value', function(snap) {
+			var results = snap.val();
+			total = 0;
+			for (var j in results) {
+				var bubbledist = measure(latitude, longitude, results[j].latitude, results[j].longitude);
+				console.log("bubbledist="+results[j].latitude+" v "+latitude);
+				if(bubbledist <= bubbleRadius) {
+					displayBubbles(results[j].title, j)
+				}
+			}
+		});
+	}
+
+	function displayBubbles(title, ref) {
+  		var addBubble = "<div class='bubble-message'><h3>" + title + "</h3><button class='show-bubble' id='" + ref + "'>View Bubble</button></div>";
+
+    	$(addBubble).hide().appendTo($('#messagesDiv')).fadeIn(400);
+
+    	if($('.container').height() > $(window).height())
+    	{
+    		$(document).scrollTop($(document).height());	
+    	}
+  	};
+
+
+	function displayBubbleMessage(text, col, currUser) {
+  		var addMessage = '';
+  		if(currUser)
+  		{
+  			addMessage="<div class='message right'>" + text + "</div>";
+  		}
+  		else
+  		{
+  			addMessage="<div class='message left' style='border-right: 10px solid #"+col+"'>" + text + "</div>";
+  		}
+
+    	$(addMessage).hide().appendTo($('#bubblesDiv')).fadeIn(400);
+
+    	if($('.container').height() > $(window).height())
+    	{
+    		$(document).scrollTop($(document).height());	
+    	}
+  	};
+
+  	function getBubbleHistory()
+  	{
+  		currBubble.once('value', function(snap) {
+			var results = snap.val();
+			for (var i in results.messages) {
+				console.log(results.messages[i]);
+				displayBubbleMessage(results.messages[i].text, results.messages[i].color, results.messages[i].uid == uid)
+			}
+		});
+  	}
+
+  	function showBubble(ref)
+  	{
+  		var bubbles = fb.child("bubbles");
+
+		bubbles.once('value', function(snap) {
+			var results = snap.val();
+			for (var i in results) {
+				if(i == ref) {
+					currBubble = bubbles.child(i);
+
+					//show message history
+					getBubbleHistory();
+					watchBubbleMessages();
+					$('.input-message').removeClass('send-message').addClass('send-bubble');
+
+					$('#bubblesDiv').show();
+				}
+			}
+		});
+  	}
+
+  	//show bubble on click
+  	$('#messagesDiv').on('click', '.show-bubble', function (e) {
+		showBubble(this.id);
+	});
+
+
 	function updateLocation(position) {    
 
 		latitude = position.coords.latitude;
@@ -68,6 +157,8 @@ $(document).ready(function() {
     		counting = true;
     		bubbleCount();
     	}
+
+    	findBubbles();
 
 	};
 
@@ -96,6 +187,7 @@ $(document).ready(function() {
 	    return d * 1000; // meters
 	}
 
+	//push to messages (not bubbles)
 	function pushMessage(){
 		if($('#messageInput').val().length > 0)
 		{
@@ -113,20 +205,83 @@ $(document).ready(function() {
 	    }
 	};
 
-	//check for 'send' events: enter, button or done
+	//push to bubbles (not messages)
+	function pushBubbleMessage(){
+		if($('#messageInput').val().length > 0)
+		{
+			console.log('push bubble message', currBubble);
+
+			var text = $('#messageInput').val();
+	    	currBubble.child('messages').push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
+
+	    	$('#messageInput').val('');
+
+				mobileAnalyticsClient.recordEvent('SendMessage', {
+        }, {
+            'CharacterCount': text.length
+        });
+        mobileAnalyticsClient.submitEvents();
+
+	    }
+	};
+
+	function watchBubbleMessages(){
+		currBubble.on('child_added', function(snapshot) {
+			var message = snapshot.val();
+
+	  		if(message.uid == uid)
+	  		{
+	        	displayBubbleMessage(message.text, message.color, true);	
+	  		}
+	  		else
+	  		{
+	  			displayBubbleMessage(message.text, message.color, false);
+	  		}
+	  		
+	  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
+
+				mobileAnalyticsClient.recordEvent('ReceiveMessage', {
+	        }, {
+	        });
+	        mobileAnalyticsClient.submitEvents();
+		});
+	}
+
+	//check for 'send' events: enter, button or done for Message input & add to messages or bubbles depending on setting
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13)
 	    {
-		    pushMessage();
+		    if($('.input-message').hasClass('.send-message'))
+			{
+				pushMessage();
+			}
+			else
+			{
+				pushBubbleMessage();
+			}
 
 	    	return false;
 	    }
 	});
 	$('.input-message .btn').click(function (e) {
-		pushMessage();
+		if($('.input-message').hasClass('.send-message'))
+		{
+			pushMessage();
+		}
+		else
+		{
+			pushBubbleMessage();
+		}
 	});
 	$('#messageInput').on('blur', function(e) {
-	    pushMessage();
+	    if($('.input-message').hasClass('.send-message'))
+		{
+			pushMessage();
+		}
+		else
+		{
+			pushBubbleMessage();
+		}
 	    $('.stick-bottom').removeClass('focused');
 	});
 
