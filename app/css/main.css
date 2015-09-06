@@ -277,11 +277,17 @@ body.login
     text-align: center;
 }
 
+.bubble1img {
+ width: fill;
+
+}
+
 .facebook
 {
-    cursor: pointer;
-    width: 300px;
-    margin: 20px auto;
+    border:1px solid green;
+    width: 50%;
+    margin: auto;
+    cursor:pointer;
 }
 
 .login .logo
@@ -318,7 +324,8 @@ body.login
 
 .carousel-indicators
 {
-    position: fixed;
+    border: 1px solid red;
+    position: absolute;
 }
 
 .no-touch .carousel
@@ -332,7 +339,8 @@ body.login
 }
 .no-touch .carousel-inner
 {
-    min-height: 50vh;
+    border:10px solid yellow;
+    min-height: 20vh;
 }
 
 .login h2

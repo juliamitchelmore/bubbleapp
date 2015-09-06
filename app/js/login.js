@@ -23,50 +23,45 @@ $(document).ready(function() {
 		
 	$(".facebook").click(function() {
 
-		fb.authWithOAuthRedirect("facebook", function(error, authData) {
-		if (error) {
+		fb.authWithOAuthRedirect("facebook", function(error) {
+			if (error) {
 		    console.log("Login Failed!", error);
-		} else {
-		    console.log("Authenticated successfully with payload:", authData);
+			}
+		});
+
+	});	
+
+	var checkSignin = function() {
+		var authData = fb.getAuth();
+		if (authData != null) {
+				color = generateColor(authData.uid);
+				fb.child("users").child(authData.uid).set({
+					id: authData.uid,
+	  			provider: authData.provider,
+	    		name: authData.facebook.displayName,
+	    		color: color
+	  		});
+				console.log("redirecting");
+				window.location.href = "chat.html";
 		}
-	});
+		setTimeout(checkSignin, 3000);
 
-});	
+	}
 
-
-	fb.onAuth(function(authData) {
-
-	  if (authData) {
-
-	    var userFB = fb.child("users").child(authData.uid);
-			
-			color = generateColor(authData.uid);
-			userFB.set({
-				id: authData.uid,
-  			provider: authData.provider,
-    		name: authData.facebook.displayName,
-    		color: color
-  		});
-
-
-			console.log("redirecting");
-			window.location.href = "chat.html";
-
-		}
+	checkSignin();
 
 });
 
 
 function generateColor(str) { // java String#hashCode
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    var c = (hash & 0x00FFFFFF)
-      .toString(16)
-      .toUpperCase();
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var c = (hash & 0x00FFFFFF)
+    .toString(16)
+    .toUpperCase();
 
-    return "00000".substring(0, 6 - c.length) + c;
-	} 
+  return "00000".substring(0, 6 - c.length) + c;
+} 
 
-});
