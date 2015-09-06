@@ -19,6 +19,7 @@ $(document).ready(function() {
 	})
 
 	var fb = new Firebase("https://scorching-heat-529.firebaseio.com/");
+	//fb.auth();
 		
 	$(".facebook").click(function() {
 
@@ -30,40 +31,31 @@ $(document).ready(function() {
 		}
 	});
 
+});	
+
+
 	fb.onAuth(function(authData) {
 
 	  if (authData) {
-	    // save the user's profile into the database so we can list users,
-	    // use them in Security and Firebase Rules, and show profiles
 
 	    var userFB = fb.child("users").child(authData.uid);
 			
-			userFB.on("value", function(snapshot) {
+			color = generateColor(authData.uid);
+			userFB.set({
+				id: authData.uid,
+  			provider: authData.provider,
+    		name: authData.facebook.displayName,
+    		color: color
+  		});
 
-				//Already Registered read color into local var
-				if (snapshot.val() === null) {
-					//This user isn't registered
-					color = generateColor(authData.uid);
-					userFB.set({
-						id: authData.uid,
-	    			provider: authData.provider,
-	      		name: authData.facebook.displayName,
-	      		color: color
-	    		});
-				}
 
-				window.location.href = "chat.html";
-
-			}, function (errorObject) {
-
-				//TODO Show error
-
-			});
+			console.log("redirecting");
+			window.location.href = "chat.html";
 
 		}
 
-  	});
-});	
+});
+
 
 function generateColor(str) { // java String#hashCode
     var hash = 0;
