@@ -277,17 +277,18 @@ body.login
     text-align: center;
 }
 
-.bubble1img {
- width: fill;
-
-}
-
 .facebook
 {
-    border:1px solid green;
-    width: 50%;
-    margin: auto;
+    margin: 20px auto;
+    width: 300px;
     cursor:pointer;
+    position: absolute;
+    bottom: 200px;
+    margin-left: -150px;
+}
+.touch .facebook
+{
+    bottom: 90px;
 }
 
 .login .logo
@@ -324,8 +325,7 @@ body.login
 
 .carousel-indicators
 {
-    border: 1px solid red;
-    position: absolute;
+    position: fixed;
 }
 
 .no-touch .carousel
@@ -339,7 +339,6 @@ body.login
 }
 .no-touch .carousel-inner
 {
-    border:10px solid yellow;
     min-height: 20vh;
 }
 
@@ -447,7 +446,7 @@ body.login
 
     .no-touch .carousel
     {
-        padding-top: 300px;
+        padding-top: 200px;
     }
 }
 
