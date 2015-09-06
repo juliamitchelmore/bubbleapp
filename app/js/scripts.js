@@ -204,6 +204,8 @@ $(document).ready(function() {
 	    	messages.push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 
 	    	$('#messageInput').val('');
+	    	$('.char-count').text('150');
+	    	$('.char-count').removeClass('warning');
 
 				mobileAnalyticsClient.recordEvent('SendMessage', {
         }, {
@@ -222,6 +224,8 @@ $(document).ready(function() {
 	    	currBubble.child('messages').push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 
 	    	$('#messageInput').val('');
+	    	$('.char-count').text('150');
+	    	$('.char-count').removeClass('warning');
 
 				mobileAnalyticsClient.recordEvent('SendMessage', {
         }, {
@@ -253,7 +257,7 @@ $(document).ready(function() {
 	}
 
 	//check for 'send' events: enter, button or done for Message input & add to messages or bubbles depending on setting
-	$('#messageInput').keypress(function (e) {
+	$('#messageInput').keyup(function (e) {
 	    if (e.keyCode == 13)
 	    {
 		    if($('.input-message.send-message').length)
@@ -267,6 +271,15 @@ $(document).ready(function() {
 
 	    	return false;
 	    }
+	    else
+	    {
+	    	$('.char-count').text(150 - $('#messageInput').val().length);
+	    	if($('#messageInput').val().length > 134)
+			{
+				$('.char-count').addClass('warning');
+			}
+	    }
+
 	});
 	$('.input-message .btn').click(function (e) {
 		if($('.input-message.send-message').length)
