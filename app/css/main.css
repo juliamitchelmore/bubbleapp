@@ -284,7 +284,8 @@ body.login
 
 .facebook
 {
-    width: 50%;
+    width: 246px;
+    height: 52px;
     margin: auto;
     cursor:pointer;
 }
