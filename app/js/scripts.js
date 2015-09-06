@@ -226,7 +226,7 @@ $(document).ready(function() {
 	};
 
 	function watchBubbleMessages(){
-		currBubble.on('child_added', function(snapshot) {
+		currBubble.child('messages').on('child_added', function(snapshot) {
 			var message = snapshot.val();
 
 	  		if(message.uid == uid)
