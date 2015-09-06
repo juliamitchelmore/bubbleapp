@@ -150,6 +150,7 @@ $(document).ready(function() {
 	$('.close-bubble').click(function (e) {
 		$('#bubblesDiv').fadeOut();
 		$('#bubblesDiv .messages').remove();
+		$('.input-message').addClass('send-message').removeClass('send-bubble');
 	});
 
 
@@ -340,7 +341,6 @@ $(document).ready(function() {
 
 	userHistory.once('value', function(snapshot)
 	{
-
 		historyFlag = false;
 
 		$('.loading').fadeOut();
