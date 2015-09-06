@@ -278,14 +278,14 @@ body.login
 }
 
 .bubble1img {
-    position:relative;
-    margin:auto;
+ width: fill;
+
 }
 
 .facebook
 {
-    width: 246px;
-    height: 52px;
+    border:1px solid green;
+    width: 50%;
     margin: auto;
     cursor:pointer;
 }
@@ -324,20 +324,23 @@ body.login
 
 .carousel-indicators
 {
+    border: 1px solid red;
     position: absolute;
 }
 
 .no-touch .carousel
 {
-    padding-top: -150px;
+    padding-top: 200px;
 }
 .touch .carousel
 {
+    padding-top: 150px;
     height: 90vh;
 }
 .no-touch .carousel-inner
 {
-    min-height: 50vh;
+    border:10px solid yellow;
+    min-height: 20vh;
 }
 
 .login h2
@@ -380,7 +383,7 @@ body.login
 
     .no-touch .carousel
     {
-        padding-top: 200px;
+        padding-top: 300px;
     }
 }
 
