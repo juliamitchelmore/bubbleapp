@@ -383,6 +383,11 @@ $(document).ready(function() {
 
 	getLocation();
 
+	function generatePlaceholder() {
+		var messages ["Go on, compliment someone!", "We know you want to ask them out", "Say hey, make a new friend", ];
+		
+	}
+
 
     //Make sure region is 'us-east-1'
   AWS.config.region = 'us-east-1';
