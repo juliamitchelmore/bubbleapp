@@ -77,14 +77,17 @@ $(document).ready(function() {
 	}
 
 	function displayBubbles(title, ref) {
-  		var addBubble = "<div class='bubble-message'><h3>You have entered: " + title + "</h3><button class='btn show-bubble' id='" + ref + "'>View Bubble</button></div>";
+		if(!($('#' + ref).length))
+		{
+	  		var addBubble = "<div class='bubble-message'><h3>You have entered: " + title + "</h3><button class='btn show-bubble' id='" + ref + "'>View Bubble</button></div>";
 
-    	$(addBubble).hide().appendTo($('#messagesDiv')).fadeIn(400);
+	    	$(addBubble).hide().appendTo($('#messagesDiv')).fadeIn(400);
 
-    	if($('.container').height() > $(window).height())
-    	{
-    		$(document).scrollTop($(document).height());	
-    	}
+	    	if($('.container').height() > $(window).height())
+	    	{
+	    		$(document).scrollTop($(document).height());	
+	    	}
+	    }
   	};
 
 
@@ -101,7 +104,7 @@ $(document).ready(function() {
 
     	$(addMessage).hide().appendTo($('#bubblesDiv')).fadeIn(400);
 
-    	if($('.container').height() > $(window).height())
+    	if($('#bubblesDiv').height() > $(window).height())
     	{
     		$(document).scrollTop($(document).height());	
     	}
@@ -133,7 +136,7 @@ $(document).ready(function() {
 					watchBubbleMessages();
 					$('.input-message').removeClass('send-message').addClass('send-bubble');
 
-					$('#bubblesDiv').show();
+					$('#bubblesDiv').fadeIn(400);
 					$('.bubble-title').text(results[i].title);
 				}
 			}
@@ -145,7 +148,7 @@ $(document).ready(function() {
 		showBubble(this.id);
 	});
 	$('.close-bubble').click(function (e) {
-		$('#bubblesDiv').hide();
+		$('#bubblesDiv').fadeOut();
 		$('#bubblesDiv .messages').remove();
 	});
 
@@ -215,7 +218,6 @@ $(document).ready(function() {
 	function pushBubbleMessage(){
 		if($('#messageInput').val().length > 0)
 		{
-
 			var text = $('#messageInput').val();
 	    	currBubble.child('messages').push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
 
@@ -254,7 +256,7 @@ $(document).ready(function() {
 	$('#messageInput').keypress(function (e) {
 	    if (e.keyCode == 13)
 	    {
-		    if($('.input-message').hasClass('.send-message'))
+		    if($('.input-message.send-message').length)
 			{
 				pushMessage();
 			}
@@ -267,7 +269,7 @@ $(document).ready(function() {
 	    }
 	});
 	$('.input-message .btn').click(function (e) {
-		if($('.input-message').hasClass('.send-message'))
+		if($('.input-message.send-message').length)
 		{
 			pushMessage();
 		}
@@ -277,14 +279,14 @@ $(document).ready(function() {
 		}
 	});
 	$('#messageInput').on('blur', function(e) {
-	    if($('.input-message').hasClass('.send-message'))
+/*	    if($('.input-message.send-message').length)
 		{
 			pushMessage();
 		}
 		else
 		{
 			pushBubbleMessage();
-		}
+		}*/
 	    $('.stick-bottom').removeClass('focused');
 	});
 
@@ -297,27 +299,38 @@ $(document).ready(function() {
 	});
 
 	//when a new message is added, show it to the user & add to the users history of received & sent messages
-	messages.limitToLast(1).on('child_added', function(snapshot) {
+	messages.on('child_added', function(snapshot) {
 		var message = snapshot.val();
-	  	if(measure(latitude, longitude, message.latitude, message.longitude) <= bubbleRadius)
-	  	{
-	  		if(message.uid == uid)
-	  		{
-	        	displayChatMessage(message.text, message.color, true);	
-	  		}
-	  		else
-	  		{
-	  			displayChatMessage(message.text, message.color, false);
-	  		}
-	  		
-	  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
+		if(!historyFlag)
+		{
+		  	if(measure(latitude, longitude, message.latitude, message.longitude) <= bubbleRadius)
+		  	{
+		  		if(message.uid == uid)
+		  		{
+		        	displayChatMessage(message.text, message.color, true);	
+		  		}
+		  		else
+		  		{
+		  			displayChatMessage(message.text, message.color, false);
+		  		}
+		  		
+		  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
 
-				mobileAnalyticsClient.recordEvent('ReceiveMessage', {
-        }, {
-        });
-        mobileAnalyticsClient.submitEvents();
+					mobileAnalyticsClient.recordEvent('ReceiveMessage', {
+	        }, {
+	        });
+	        mobileAnalyticsClient.submitEvents();
 
-	  	}
+		  	}
+		}
+	});
+
+	userHistory.once('value', function(snapshot)
+	{
+
+		historyFlag = false;
+
+		$('.loading').fadeOut();
 	});
 
 	//on load, show the history of messages (but not on future additions)
@@ -351,17 +364,11 @@ $(document).ready(function() {
 
     	if($('.container').height() > $(window).height())
     	{
-    		$(document).scrollTop($(document).height());	
+    		$(document).scrollTop($(document).height());
     	}
   	};
 
 	getLocation();
-
-	setTimeout(function()
-	{
-		$('.loading').fadeOut();
-		historyFlag = false;
-	}, 2000);
 
 
     //Make sure region is 'us-east-1'
