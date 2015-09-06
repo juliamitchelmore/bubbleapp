@@ -340,6 +340,69 @@ body.login
     padding: 0 10px;
 }
 
+/* ==========================================================================
+   Bubble history styles
+   ========================================================================== */
+.bubble-message
+{
+    background: #eee;
+    border: 2px solid #ccc;
+    display: inline-block;
+    width: 100%;
+    padding: 10px 20px;
+    text-align: center;
+    margin: 5px 0;
+}
+.bubble-message h3
+{
+    padding: 0;
+    margin: 5px 0 10px 0;
+    font-size: 20px;
+}
+.bubble-message button
+{
+    background: #fff;
+
+}
+
+#bubblesDiv
+{
+    position: absolute;
+    background: #fff;
+    top: 0;
+    margin-left: -40px;
+    display: block;
+    max-width: 640px;
+    padding: 110px 20px 110px 0;
+}
+.bubble-header
+{
+    background: #eee;
+    width: 100%;
+    top: 53px;
+    left: 0;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    z-index: 9;
+}
+.bubble-header-inner
+{
+    width: 600px;
+    margin: 0 auto;
+}
+.bubble-title
+{
+    display: inline;
+    font-size: 18px;
+    font-weight: bold;
+}
+.close-bubble
+{
+    float: right;
+    display: inline;
+    cursor: pointer;
+}
 
 /* ==========================================================================
    Desktop styles

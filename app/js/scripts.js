@@ -24,6 +24,8 @@ $(document).ready(function() {
 
 	var currBubble = '';
 
+	$('#bubblesDiv').hide();
+
 	//Static Functions
 	function getLocation() {
 		navigator.geolocation.getCurrentPosition(updateLocation);
@@ -75,7 +77,7 @@ $(document).ready(function() {
 	}
 
 	function displayBubbles(title, ref) {
-  		var addBubble = "<div class='bubble-message'><h3>" + title + "</h3><button class='show-bubble' id='" + ref + "'>View Bubble</button></div>";
+  		var addBubble = "<div class='bubble-message'><h3>You have entered: " + title + "</h3><button class='btn show-bubble' id='" + ref + "'>View Bubble</button></div>";
 
     	$(addBubble).hide().appendTo($('#messagesDiv')).fadeIn(400);
 
@@ -110,7 +112,6 @@ $(document).ready(function() {
   		currBubble.once('value', function(snap) {
 			var results = snap.val();
 			for (var i in results.messages) {
-				console.log(results.messages[i]);
 				displayBubbleMessage(results.messages[i].text, results.messages[i].color, results.messages[i].uid == uid)
 			}
 		});
@@ -122,6 +123,7 @@ $(document).ready(function() {
 
 		bubbles.once('value', function(snap) {
 			var results = snap.val();
+
 			for (var i in results) {
 				if(i == ref) {
 					currBubble = bubbles.child(i);
@@ -132,6 +134,7 @@ $(document).ready(function() {
 					$('.input-message').removeClass('send-message').addClass('send-bubble');
 
 					$('#bubblesDiv').show();
+					$('.bubble-title').text(results[i].title);
 				}
 			}
 		});
@@ -140,6 +143,10 @@ $(document).ready(function() {
   	//show bubble on click
   	$('#messagesDiv').on('click', '.show-bubble', function (e) {
 		showBubble(this.id);
+	});
+	$('.close-bubble').click(function (e) {
+		$('#bubblesDiv').hide();
+		$('#bubblesDiv .messages').remove();
 	});
 
 
@@ -158,8 +165,7 @@ $(document).ready(function() {
     		bubbleCount();
     	}
 
-    	findBubbles();
-
+	    findBubbles();
 	};
 
 	function generateColor(str) { // java String#hashCode
@@ -209,7 +215,6 @@ $(document).ready(function() {
 	function pushBubbleMessage(){
 		if($('#messageInput').val().length > 0)
 		{
-			console.log('push bubble message', currBubble);
 
 			var text = $('#messageInput').val();
 	    	currBubble.child('messages').push({text: text, longitude: longitude, latitude: latitude, color: color, uid: uid});
@@ -237,8 +242,6 @@ $(document).ready(function() {
 	  		{
 	  			displayBubbleMessage(message.text, message.color, false);
 	  		}
-	  		
-	  		userFB.child('messages').push({text: message.text, color: message.color, uid: message.uid});
 
 				mobileAnalyticsClient.recordEvent('ReceiveMessage', {
 	        }, {
