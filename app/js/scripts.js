@@ -24,6 +24,8 @@ $(document).ready(function() {
 
 	var currBubble = '';
 
+	var placeholders = ["Go on, compliment someone!", "Share your thoughts!", "Say hey, make a new friend!"];
+
 	$('#bubblesDiv').hide();
 
 	//Static Functions
@@ -197,6 +199,13 @@ $(document).ready(function() {
 	    return d * 1000; // meters
 	}
 
+
+	function changePlaceholder() {
+		var rand = Math.floor((Math.random() * 3));
+
+		$('#messageInput').attr('placeholder', placeholders[rand]);
+	}
+
 	//push to messages (not bubbles)
 	function pushMessage(){
 		if($('#messageInput').val().length > 0)
@@ -207,6 +216,8 @@ $(document).ready(function() {
 	    	$('#messageInput').val('');
 	    	$('.char-count').text('150');
 	    	$('.char-count').removeClass('warning');
+
+	    	changePlaceholder();
 
 				mobileAnalyticsClient.recordEvent('SendMessage', {
         }, {
@@ -227,6 +238,8 @@ $(document).ready(function() {
 	    	$('#messageInput').val('');
 	    	$('.char-count').text('150');
 	    	$('.char-count').removeClass('warning');
+
+	    	changePlaceholder();
 
 				mobileAnalyticsClient.recordEvent('SendMessage', {
         }, {
@@ -382,11 +395,6 @@ $(document).ready(function() {
   	};
 
 	getLocation();
-
-	function generatePlaceholder() {
-		var messages ["Go on, compliment someone!", "We know you want to ask them out", "Say hey, make a new friend", ];
-		
-	}
 
 
     //Make sure region is 'us-east-1'
