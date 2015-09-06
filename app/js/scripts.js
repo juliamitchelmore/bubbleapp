@@ -112,7 +112,7 @@ $(document).ready(function() {
     	}
   	};
 
-  	function getBubbleHistory()
+  	/*function getBubbleHistory()
   	{
   		currBubble.once('value', function(snap) {
 			var results = snap.val();
@@ -120,7 +120,7 @@ $(document).ready(function() {
 				displayBubbleMessage(results.messages[i].text, results.messages[i].color, results.messages[i].uid == uid)
 			}
 		});
-  	}
+  	}*/
 
   	function showBubble(ref)
   	{
@@ -134,7 +134,7 @@ $(document).ready(function() {
 					currBubble = bubbles.child(i);
 
 					//show message history
-					getBubbleHistory();
+					//getBubbleHistory();
 					watchBubbleMessages();
 					$('.input-message').removeClass('send-message').addClass('send-bubble');
 
@@ -151,7 +151,7 @@ $(document).ready(function() {
 	});
 	$('.close-bubble').click(function (e) {
 		$('#bubblesDiv').fadeOut();
-		$('#bubblesDiv .messages').remove();
+		$('#bubblesDiv .message').remove();
 		$('.input-message').addClass('send-message').removeClass('send-bubble');
 	});
 
@@ -305,25 +305,7 @@ $(document).ready(function() {
 			pushBubbleMessage();
 		}
 	});
-	$('#messageInput').on('blur', function(e) {
-/*	    if($('.input-message.send-message').length)
-		{
-			pushMessage();
-		}
-		else
-		{
-			pushBubbleMessage();
-		}*/
-	    $('.stick-bottom').removeClass('focused');
-	});
 
-	//fix weird focus input issue which pushes fixed footer up on keyboard show
-	$('#messageInput').on('focus', function(e) {
-		if(isTouch)
-	  	{
-		    $('.stick-bottom').addClass('focused');
-		}
-	});
 
 	//when a new message is added, show it to the user & add to the users history of received & sent messages
 	messages.on('child_added', function(snapshot) {
