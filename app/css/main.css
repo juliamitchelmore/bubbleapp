@@ -277,12 +277,16 @@ body.login
     text-align: center;
 }
 
+.bubble1img {
+    position:relative;
+    margin:auto;
+}
+
 .facebook
 {
-    cursor: pointer;
-    position: absolute;
-    width: 300px;
-    margin: 20px auto;
+    width: 50%;
+    margin: auto;
+    cursor:pointer;
 }
 
 .login .logo
@@ -319,16 +323,15 @@ body.login
 
 .carousel-indicators
 {
-    position: fixed;
+    position: absolute;
 }
 
 .no-touch .carousel
 {
-    padding-top: 200px;
+    padding-top: -150px;
 }
 .touch .carousel
 {
-    padding-top: 150px;
     height: 90vh;
 }
 .no-touch .carousel-inner
@@ -376,7 +379,7 @@ body.login
 
     .no-touch .carousel
     {
-        padding-top: 300px;
+        padding-top: 200px;
     }
 }
 
