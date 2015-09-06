@@ -124,7 +124,7 @@ textarea {
 
 .input-message
 {
-    background: #8a8ada;
+    background: #ddd;
 }
 
 .input-message textarea
@@ -234,6 +234,38 @@ textarea {
   }
 }
 
+/* count badge */
+.count-users
+{
+    float: right;
+    position: relative;
+    margin: 8px 12px;
+}
+.user-img
+{
+    width: 30px;
+    height: auto;
+}
+#count {
+    padding: 1px 6px;
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    font-size: 12px;
+    border-radius:50%;
+    background-color: #888888;
+    color: white;
+    font-weight: bold;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+#count.on {
+    background-color: #8a8ada;    
+}
+#count.off {
+    background-color: #888888;    
+}
+
 /* ==========================================================================
    Login page styles
    ========================================================================== */
@@ -333,7 +365,8 @@ body.login
     {
         width: 100px;
         margin-left: 10px;
-        background: #eee;
+        background: #8a8ada;
+        color: #fff;
         display: inline-block;
         line-height: 60px;
         padding: 0;
@@ -536,21 +569,6 @@ h2.heading {
 .responsive-img {
     max-width: 100%;
     height: auto;
-}
-#count {
-    margin: 8px;
-    padding: 5px 11px;
-    float: right;
-    border-radius:50%;
-    background-color: #888888;
-    color: white;
-    font-weight: bold;
-}
-#count.on {
-    background-color: #aa2222;    
-}
-#count.off {
-    background-color: #888888;    
 }
 
 

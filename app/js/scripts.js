@@ -20,6 +20,8 @@ $(document).ready(function() {
 
 	var historyFlag = true;
 
+	var isTouch = $('html').hasClass('touch');
+
 	//Static Functions
 	function getLocation() {
 		navigator.geolocation.getCurrentPosition(updateLocation);
@@ -186,7 +188,8 @@ $(document).ready(function() {
   		{
   			addMessage="<div class='message left' style='border-right: 10px solid #"+col+"'>" + text + "</div>";
   		}
-    	$(addMessage).appendTo($('#messagesDiv'));
+
+    	$(addMessage).hide().appendTo($('#messagesDiv')).fadeIn(400);
 
     	if($('.container').height() > $(window).height())
     	{
@@ -198,7 +201,7 @@ $(document).ready(function() {
 
 	setTimeout(function()
 	{
-		$('.loading').hide();
+		$('.loading').fadeOut();
 		historyFlag = false;
 	}, 2000);
 
