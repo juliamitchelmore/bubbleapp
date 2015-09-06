@@ -31,18 +31,24 @@ $(document).ready(function() {
 
 	});	
 
-	var authData = fb.getAuth();
-	if (authData != null) {
-			color = generateColor(authData.uid);
-			fb.child("users").child(authData.uid).set({
-				id: authData.uid,
-  			provider: authData.provider,
-    		name: authData.facebook.displayName,
-    		color: color
-  		});
-			console.log("redirecting");
-			window.location.href = "chat.html";
+	var checkSignin = function() {
+		var authData = fb.getAuth();
+		if (authData != null) {
+				color = generateColor(authData.uid);
+				fb.child("users").child(authData.uid).set({
+					id: authData.uid,
+	  			provider: authData.provider,
+	    		name: authData.facebook.displayName,
+	    		color: color
+	  		});
+				console.log("redirecting");
+				window.location.href = "chat.html";
+		}
+		setTimeout(checkSignin, 3000);
+
 	}
+
+	checkSignin();
 
 });
 
